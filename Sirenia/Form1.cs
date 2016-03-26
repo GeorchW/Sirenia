@@ -225,7 +225,7 @@ namespace Sirenia
                                 lStatus.Text = $"{file.FullName}\n({doneFiles} / {FileList.Count}, {remaining} remaining)";
                             }));
                         }
-                        string targetPath = Path.Combine(targetRootDir.FullName, file.FullName.Substring(RootDir.FullName.Length));
+                        string targetPath = Path.Combine(targetRootDir.FullName, file.FullName.Substring(RootDir.FullName.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
                         new FileInfo(targetPath).Directory.Create();
                         file.CopyTo(targetPath, true);
                         doneBytes += file.Length;
@@ -239,6 +239,11 @@ namespace Sirenia
                 });
                 currentlyRunning.Start();
             }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            currentlyRunning?.Abort();
         }
     }
 }

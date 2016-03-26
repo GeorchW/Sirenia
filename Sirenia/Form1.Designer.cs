@@ -39,9 +39,10 @@
             // btnGetFiles
             // 
             this.btnGetFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnGetFiles.Location = new System.Drawing.Point(12, 329);
+            this.btnGetFiles.Location = new System.Drawing.Point(16, 507);
+            this.btnGetFiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnGetFiles.Name = "btnGetFiles";
-            this.btnGetFiles.Size = new System.Drawing.Size(75, 23);
+            this.btnGetFiles.Size = new System.Drawing.Size(100, 28);
             this.btnGetFiles.TabIndex = 0;
             this.btnGetFiles.Text = "Get Files";
             this.btnGetFiles.UseVisualStyleBackColor = true;
@@ -52,17 +53,19 @@
             this.tvFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tvFiles.Location = new System.Drawing.Point(12, 12);
+            this.tvFiles.Location = new System.Drawing.Point(16, 15);
+            this.tvFiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tvFiles.Name = "tvFiles";
-            this.tvFiles.Size = new System.Drawing.Size(536, 282);
+            this.tvFiles.Size = new System.Drawing.Size(694, 448);
             this.tvFiles.TabIndex = 1;
             // 
             // btnCopy
             // 
             this.btnCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCopy.Location = new System.Drawing.Point(93, 329);
+            this.btnCopy.Location = new System.Drawing.Point(124, 507);
+            this.btnCopy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnCopy.Name = "btnCopy";
-            this.btnCopy.Size = new System.Drawing.Size(75, 23);
+            this.btnCopy.Size = new System.Drawing.Size(100, 28);
             this.btnCopy.TabIndex = 0;
             this.btnCopy.Text = "Copy to...";
             this.btnCopy.UseVisualStyleBackColor = true;
@@ -72,34 +75,38 @@
             // 
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar.Location = new System.Drawing.Point(12, 300);
+            this.progressBar.Location = new System.Drawing.Point(16, 471);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.progressBar.Maximum = 10000;
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(536, 23);
+            this.progressBar.Size = new System.Drawing.Size(696, 28);
             this.progressBar.TabIndex = 2;
             // 
             // lStatus
             // 
             this.lStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lStatus.Location = new System.Drawing.Point(174, 329);
+            this.lStatus.Location = new System.Drawing.Point(232, 507);
+            this.lStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lStatus.Name = "lStatus";
-            this.lStatus.Size = new System.Drawing.Size(374, 23);
+            this.lStatus.Size = new System.Drawing.Size(480, 28);
             this.lStatus.TabIndex = 3;
             this.lStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(560, 364);
+            this.ClientSize = new System.Drawing.Size(728, 550);
             this.Controls.Add(this.lStatus);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.tvFiles);
             this.Controls.Add(this.btnCopy);
             this.Controls.Add(this.btnGetFiles);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.ResumeLayout(false);
 
         }
