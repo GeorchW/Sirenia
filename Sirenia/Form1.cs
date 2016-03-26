@@ -37,54 +37,70 @@ namespace Sirenia
         List<FileInfo> FileList = new List<FileInfo>();
         DirectoryInfo RootDir;
         long totalSize;
+        Thread currentlyRunning;
         private void btnGetFiles_Click(object sender, EventArgs e)
         {
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            if (currentlyRunning != null && currentlyRunning.IsAlive)
             {
-                RootDir = new DirectoryInfo(folderBrowserDialog.SelectedPath);
-                FileList.Clear();
-                tvFiles.Nodes.Clear();
-                QueryDirectory(RootDir, new string[0]);
-                totalSize = FileList.Sum(file => file.Length);
-                float gb = ((float)totalSize) / (1 << 30);
-                Dictionary<string, SpecialTreeNode> dict = new Dictionary<string, SpecialTreeNode>();
-                foreach (var file in FileList)
+                MessageBox.Show("A task is still running in the background!");
+            }
+            else if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                progressBar.Style = ProgressBarStyle.Marquee;
+                currentlyRunning = new Thread(() =>
                 {
-                    SpecialTreeNode node;
-                    if (!dict.TryGetValue(file.Directory.FullName, out node))
+                    RootDir = new DirectoryInfo(folderBrowserDialog.SelectedPath);
+                    FileList.Clear();
+                    QueryDirectory(RootDir, new string[0]);
+                    totalSize = FileList.Sum(file => file.Length);
+                    float gb = ((float)totalSize) / (1 << 30);
+                    Dictionary<string, SpecialTreeNode> dict = new Dictionary<string, SpecialTreeNode>();
+                    foreach (var file in FileList)
                     {
-                        node = new SpecialTreeNode(file.Directory);
-                        dict.Add(file.Directory.FullName, node);
-                    }
-                    node.Size += file.Length;
-                    node.FileCount++;
-                }
-                List<Tuple<string, SpecialTreeNode>> newNodes = new List<Tuple<string, SpecialTreeNode>>(dict.Select(item => new Tuple<string, SpecialTreeNode>(item.Key, item.Value)));
-                while (newNodes.Count > 0)
-                {
-                    var copy = newNodes.ToArray();
-                    newNodes.Clear();
-                    foreach (var item in copy)
-                    {
-                        DirectoryInfo dir = new DirectoryInfo(item.Item1);
-                        if (dir.Parent != null)
+                        SpecialTreeNode node;
+                        if (!dict.TryGetValue(file.Directory.FullName, out node))
                         {
-                            SpecialTreeNode parentNode;
-                            if (!dict.TryGetValue(dir.Parent.FullName, out parentNode))
+                            node = new SpecialTreeNode(file.Directory);
+                            dict.Add(file.Directory.FullName, node);
+                        }
+                        node.Size += file.Length;
+                        node.FileCount++;
+                    }
+                    List<Tuple<string, SpecialTreeNode>> newNodes = new List<Tuple<string, SpecialTreeNode>>(dict.Select(item => new Tuple<string, SpecialTreeNode>(item.Key, item.Value)));
+                    List<TreeNode> toBeAdded = new List<TreeNode>();
+                    while (newNodes.Count > 0)
+                    {
+                        var copy = newNodes.ToArray();
+                        newNodes.Clear();
+                        foreach (var item in copy)
+                        {
+                            DirectoryInfo dir = new DirectoryInfo(item.Item1);
+                            if (dir.FullName != RootDir.FullName)
                             {
-                                parentNode = new SpecialTreeNode(dir.Parent);
-                                newNodes.Add(new Tuple<string, SpecialTreeNode>(dir.Parent.FullName, parentNode));
-                                dict.Add(dir.Parent.FullName, parentNode);
+                                SpecialTreeNode parentNode;
+                                if (!dict.TryGetValue(dir.Parent.FullName, out parentNode))
+                                {
+                                    parentNode = new SpecialTreeNode(dir.Parent);
+                                    newNodes.Add(new Tuple<string, SpecialTreeNode>(dir.Parent.FullName, parentNode));
+                                    dict.Add(dir.Parent.FullName, parentNode);
+                                }
+                                parentNode.Nodes.Add(item.Item2);
                             }
-                            parentNode.Nodes.Add(item.Item2);
-                        }
-                        else
-                        {
-                            tvFiles.Nodes.Add(item.Item2);
+                            else
+                            {
+                                toBeAdded.Add(item.Item2);
+                            }
                         }
                     }
-                }
-                CorrectTree((SpecialTreeNode)tvFiles.Nodes[0]);
+                    CorrectTree((SpecialTreeNode)toBeAdded[0]);
+                    this.Invoke(new Action(() =>
+                    {
+                        tvFiles.Nodes.Clear();
+                        tvFiles.Nodes.AddRange(toBeAdded.ToArray());
+                        progressBar.Style = ProgressBarStyle.Continuous;
+                    }));
+                });
+                currentlyRunning.Start();
             }
         }
 
@@ -178,9 +194,17 @@ namespace Sirenia
 
         private void btnCopy_Click(object sender, EventArgs e)
         {
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            if (RootDir == null || FileList.Count == 0)
             {
-                Task task = new Task(() =>
+                MessageBox.Show("Please select some source folder containing any files first");
+            }
+            else if (currentlyRunning != null && currentlyRunning.IsAlive)
+            {
+                MessageBox.Show("A task is still running in the background!");
+            }
+            else if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                currentlyRunning = new Thread(() =>
                 {
                     long doneBytes = 0;
                     long doneFiles = 0;
@@ -213,7 +237,7 @@ namespace Sirenia
                         lStatus.Text = "Done!";
                     }));
                 });
-                task.Start();
+                currentlyRunning.Start();
             }
         }
     }
