@@ -9,18 +9,30 @@ You start the application and choose the path where the program should look for 
 
 # ignore.txt examples
 A file looking like this
+
     *
+    
 will ignore the entire folder it lies in. (Very handy!)
+
 This
+
     *.bin
+    
 will ignore any files ending in .bin.
+
 This
+
     SomeFileOrFolder
+    
 will ignore the file or folder named (exactly) SomeFileOrFolder.
+
 This
+
     *.bin
     SomeFileOrFolder
+    
 combines both.
 This
+
     @contains:.git
 will ignore every subfolder that contains a folder named .git.
